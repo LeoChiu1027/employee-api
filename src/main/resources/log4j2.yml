@@ -9,7 +9,7 @@ Configuration:
       - name: log.level.console
         value: debug
       - name: log.path
-        value: log
+        value: logs
       - name: project.name
         value: employee-api
       - name: log.pattern
@@ -29,7 +29,7 @@ Configuration:
         PatternLayout:
           pattern: ${log.pattern}
         Filters:
-          #一定要先去除不接受的日誌級別，然後獲取需要接受的日誌級別
+          #        一定要先去除不接受的日誌級別，然後獲取需要接受的日誌級別
           ThresholdFilter:
             - level: error
               onMatch: DENY
@@ -43,36 +43,40 @@ Configuration:
             interval: 1
         DefaultRolloverStrategy:     # 檔案最多100個
           max: 100
+      #   錯誤日誌
+      - name: EXCEPTION_ROLLING_FILE
+        ignoreExceptions: false
+        fileName: ${log.path}/${project.name}_exception.log
+        filePattern: "${log.path}/exception/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        ThresholdFilter:
+          level: error
+          onMatch: ACCEPT
+          onMismatch: DENY
+        PatternLayout:
+          pattern: ${log.pattern}
+        Policies:
+          TimeBasedTriggeringPolicy:  # 按天分類
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:     # 檔案最多100個
+          max: 100
+
+
 
   Loggers:
     Root:
-      level: debug
+      level: info
       AppenderRef:
         - ref: CONSOLE
         - ref: ROLLING_FILE
         - ref: EXCEPTION_ROLLING_FILE
-    Logger:
-      - name: platform
-        level: info
-        additivity: false
-        AppenderRef:
-          - ref: CONSOLE
-          - ref: PLATFORM_ROLLING_FILE
 
-      - name: bussiness
-        level: info
-        additivity: false
-        AppenderRef:
-          - ref: BUSSINESS_ROLLING_FILE
 
-      - name: exception
-        level: debug
-        additivity: true
-        AppenderRef:
-          - ref: EXCEPTION_ROLLING_FILE
-
-      - name: agent
-        level: info
-        additivity: false
-        AppenderRef:
-          - ref: AGENT_ROLLING_FILE
+#    監聽具體包下面的日誌
+#    Logger: # 為com.xjj包配置特殊的Log級別，方便除錯
+#      - name: com.xjj
+#        additivity: false
+#        level: ${sys:log.level.xjj}
+#        AppenderRef:
+#          - ref: CONSOLE
+#          - ref: ROLLING_FILE

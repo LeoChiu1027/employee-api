@@ -1,0 +1,23 @@
+node('master') {
+    stage('Clone') {
+      echo "1.Clone Stage"
+      git branch: 'master',
+      credentialsId: 'c25e302e-e1ee-4e16-8296-2387f43bc87c',
+      url: 'https://github.com/LeoChiu1027/employee-api.git'
+    }
+
+    stage('Remove Deployments'){
+      echo "2.Remove deployments"
+      sh "kubectl delete -f ${WORKSPACE}/deploy/employee-api-deployment.yaml --ignore-not-found"
+    }
+
+    stage('Build') {
+      echo "3.Build Stage"
+      sh "mvn clean package -Pdev dockerfile:build"
+    }
+
+    stage('Deploy APP'){
+      echo "4.Deploy app in k8s"
+      sh "kubectl create -f ${WORKSPACE}/deploy/employee-api-deployment.yaml"
+    }
+}
