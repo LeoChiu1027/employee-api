@@ -2,7 +2,6 @@
 
 # Jenkins
 wget -q -O - https://pkg.jenkins.io/debian/jenkins-ci.org.key | sudo apt-key add -
-sudo apt-key adv --keyserver keys.gnupg.net --recv-keys FCEF32E745F2C3D5
 sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
 sudo add-apt-repository ppa:webupd8team/java -y
 sudo apt-get update
@@ -13,7 +12,7 @@ sudo apt-get install jenkins -y
 # Docker
 sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo apt-key fingerprint 0EBF:CD88
+sudo apt-key fingerprint 0EBFCD88
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 sudo apt-get update
 sudo apt-get install docker-ce -y
