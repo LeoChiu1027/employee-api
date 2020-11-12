@@ -1,4 +1,4 @@
-node('master') {
+node('k8s-jnlp') {
     stage('Clone') {
       echo "1.Clone Stage"
       git branch: 'master',
